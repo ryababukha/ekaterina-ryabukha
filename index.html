@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ekaterina Ryabukha | Home Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'accent': '#d8b4fe',
+                        'accent-green': '#bbf7d0',
+                    },
+                    fontFamily: {
+                        'mono': ['JetBrains Mono', 'monospace'],
+                    },
+                    boxShadow: {
+                        'brutalist-sm': '4px 4px 0px 0px rgba(0,0,0,1)',
+                        'brutalist': '8px 8px 0px 0px rgba(0,0,0,1)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply bg-[#f0f0f0] text-black font-mono selection:bg-accent selection:text-black;
+            }
+            h1 { @apply text-4xl md:text-6xl font-extrabold uppercase mb-4 leading-none; }
+            h2 { @apply text-2xl font-bold uppercase mb-4; }
+            p { @apply mb-6 text-lg leading-relaxed; }
+            ul { @apply mb-6 list-none; }
+            li { @apply mb-4 flex items-start; }
+            li::before { content: '>'; @apply mr-2 font-bold text-accent bg-black px-1; }
+            a { @apply underline decoration-2 underline-offset-2 transition-all hover:bg-accent hover:text-black; }
+        }
+        .brutalist-card {
+            @apply border-4 border-black bg-white p-4 shadow-brutalist mb-6;
+        }
+        .icon-link {
+            @apply border-2 border-black p-2 bg-white shadow-brutalist-sm hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 max-w-4xl mx-auto">
+    
+    <nav class="flex justify-end items-center mb-8">
+        <div class="flex gap-4">
+            <a href="https://www.linkedin.com/in/ekaterina-ryabukha/" class="icon-link" aria-label="LinkedIn">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.238 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+            </a>
+            <a href="https://x.com/ryababukha" class="icon-link" aria-label="X (Twitter)">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </a>
+            <a href="mailto:ryababukha@gmail.com" class="icon-link" aria-label="Email">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            </a>
+        </div>
+    </nav>
+
+    <header class="mb-8 flex flex-col md:flex-row gap-8 items-start">
+        <div class="w-32 h-32 md:w-48 md:h-48 border-4 border-black bg-white shadow-brutalist shrink-0 flex items-center justify-center overflow-hidden">
+            <img src="assets/Screenshot 2025-12-15 at 22.16.14.png" alt="Ekaterina Ryabukha" class="w-full h-full object-cover">
+        </div>
+        <div>
+            <h1>Ekaterina Ryabukha</h1>
+            <div class="inline-block border-2 border-black bg-accent px-2 py-1 font-bold mb-4">
+                Product marketing leader @ JetBrains | 8 years of experience in tech | Reforge and CXL-certified
+            </div>
+            <p class="text-sm">📍 Amsterdam, Netherlands<br>ENG | RU | Een beetje Nederland</p>
+        </div>
+    </header>
+
+    <main>
+        <section class="-mt-4">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-4">
+                <h2 class="mb-0">Hey there!</h2>
+                <div class="flex justify-end mt-4 md:mt-0">
+                    <a href="journey.html" class="icon-link flex items-center gap-2 no-underline">
+                        <span class="text-xl">🗺️</span>
+                        <span class="font-bold text-sm">More about my journey</span>
+                    </a>
+                </div>
+            </div>
+            <div class="brutalist-card">
+                <p>Welcome to my vibe-coded, minimalistic corner of the internet. My path to marketing wasn’t linear: I started in tech support, did some tech writing, and learned a bit of programming before finding my place in product marketing.</p>
+            
+                <p class="mb-0">For the past six and a half years, I’ve been working at <a href="https://jetbrains.com/">JetBrains</a>, the company behind the Kotlin programming language and tools like IntelliJ IDEA and WebStorm, loved by millions of developers worldwide. I started out as a solo PMM, building a bunch of processes from scratch and driving strategic initiatives. Now I lead the marketing team behind six JetBrains products – all while trying to integrate into Dutch society.</p>
+            </div>        </section>
+
+        <section class="mt-8">
+            <h2>What I do best</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="brutalist-card mb-0 p-3 hover:bg-accent transition-colors cursor-default">
+                    <h3 class="font-bold border-b-2 border-black pb-1 mb-2 text-base">Product marketing</h3>
+                    <p class="text-sm mb-0">with extensive experience in positioning, messaging, and marketing campaigns</p>
+                </div>
+                <div class="brutalist-card mb-0 p-3 hover:bg-accent transition-colors cursor-default">
+                    <h3 class="font-bold border-b-2 border-black pb-1 mb-2 text-base">Team leadership and management</h3>
+                    <p class="text-sm mb-0">building strong teams that make things happen</p>
+                </div>
+                <div class="brutalist-card mb-0 p-3 hover:bg-accent transition-colors cursor-default">
+                    <h3 class="font-bold border-b-2 border-black pb-1 mb-2 text-base">Strategic thinking</h3>
+                    <p class="text-sm mb-0">without losing sight of the details</p>
+                </div>
+                <div class="brutalist-card mb-0 p-3 hover:bg-accent transition-colors cursor-default">
+                    <h3 class="font-bold border-b-2 border-black pb-1 mb-2 text-base">Tech and developer marketing</h3>
+                    <p class="text-sm mb-0">working with audiences who don’t tolerate marketing fluff</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mt-8">
+            <h2>My superpowers ✨</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="brutalist-card mb-0 p-3 hover:bg-accent-green transition-colors cursor-default">
+                    <h3 class="font-bold border-b-2 border-black pb-1 mb-2 text-base">Organizing unstructured chaos</h3>
+                    <p class="text-sm mb-0">working best in environments without clear structure and making them easier to navigate</p>
+                </div>
+                <div class="brutalist-card mb-0 p-3 hover:bg-accent-green transition-colors cursor-default relative group/pivot">
+                    <h3 class="font-bold border-b-2 border-black pb-1 mb-2 text-base relative z-10">Pivoting like a pro</h3>
+                    <p class="text-sm mb-0 relative z-10">adapting fast through reorgs, priority shifts, and AI-driven disruption</p>
+                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-36 opacity-0 group-hover/pivot:opacity-100 transition-opacity duration-300 pointer-events-none z-20">
+                        <img src="https://carolynherfurth.com/wp-content/uploads/2019/10/Screen-Shot-2019-10-20-at-8.20.52-AM.png" alt="Ross Geller PIVOT!" class="w-full border-4 border-black shadow-brutalist-sm bg-accent-green">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="mt-12 py-6 text-center bg-gray-300 border-t-4 border-black -mx-4 md:-mx-8 px-4 relative overflow-visible">
+        <p class="text-sm text-gray-700 mb-0">Built with WebStorm, JetBrains Junie, and a pinch of millennial nostalgia <span class="sparkle-trigger">📎</span></p>
+        <div class="clippy-container">
+            <img src="https://upload.wikimedia.org/wikipedia/en/d/db/Clippy-letter.PNG" alt="Clippy" class="clippy-img">
+        </div>
+    </footer>
+    
+    <style>
+        .sparkle-trigger {
+            cursor: pointer;
+            display: inline-block;
+            transition: transform 0.2s;
+            position: relative;
+        }
+        .sparkle-trigger:hover {
+            transform: scale(1.3);
+        }
+        .clippy-container {
+            position: fixed;
+            bottom: -200px;
+            right: 40px;
+            transition: bottom 0.3s ease-out;
+            pointer-events: none;
+            z-index: 1000;
+            visibility: hidden;
+        }
+        footer:has(.sparkle-trigger:hover) .clippy-container {
+            visibility: visible;
+        }
+        .clippy-img {
+            width: 100px;
+            height: auto;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+        }
+        .sparkle-trigger:hover ~ .clippy-container,
+        footer:has(.sparkle-trigger:hover) .clippy-container {
+            bottom: 60px;
+        }
+    </style>
+
+</body>
+</html>

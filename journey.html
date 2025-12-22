@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ekaterina Ryabukha | Career and Projects</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'accent': '#d8b4fe',
+                        'accent-green': '#bbf7d0',
+                        'map-bg': '#e8dcc4',
+                        'map-path': '#8b7355',
+                        'map-water': '#a8c8dc',
+                    },
+                    fontFamily: {
+                        'mono': ['JetBrains Mono', 'monospace'],
+                    },
+                    boxShadow: {
+                        'brutalist-sm': '4px 4px 0px 0px rgba(0,0,0,1)',
+                        'brutalist': '8px 8px 0px 0px rgba(0,0,0,1)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply bg-[#f0f0f0] text-black font-mono selection:bg-accent selection:text-black;
+            }
+            h2 { @apply text-2xl font-bold uppercase mb-4; }
+            h3 { @apply text-xl font-bold mb-2; }
+            p { @apply mb-4 text-base leading-relaxed; }
+            ul { @apply mb-4 list-none; }
+            li { @apply mb-2 flex items-start text-sm; }
+            li::before { content: ''; @apply mr-0; }
+            a { @apply underline decoration-2 underline-offset-2 transition-all hover:bg-accent hover:text-black; }
+        }
+        .brutalist-card {
+            @apply border-4 border-black bg-white p-4 shadow-brutalist mb-8;
+        }
+        .tag {
+            @apply inline-block border-2 border-black bg-accent px-2 py-0.5 text-xs font-bold mb-2 mr-2;
+        }
+        .icon-link {
+            @apply border-2 border-black p-2 bg-white shadow-brutalist-sm hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all no-underline;
+        }
+
+        /* Map Container */
+        .map-container {
+            @apply relative border-4 border-black bg-map-bg overflow-hidden;
+            background-image:
+                    radial-gradient(circle at 20% 80%, rgba(168, 200, 220, 0.3) 0%, transparent 30%),
+                    radial-gradient(circle at 80% 20%, rgba(168, 200, 220, 0.2) 0%, transparent 25%),
+                    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h60v60H0z' fill='none'/%3E%3Cpath d='M30 0v60M0 30h60' stroke='%23d4c4a8' stroke-width='1'/%3E%3C/svg%3E");
+        }
+
+        /* Map Landmarks */
+        .landmark {
+            @apply absolute cursor-pointer transition-all duration-300;
+        }
+        .landmark:hover {
+            @apply scale-110;
+            z-index: 50;
+        }
+        .landmark:hover .landmark-tooltip {
+            @apply opacity-100 visible;
+        }
+        .landmark-icon {
+            @apply w-16 h-16 md:w-20 md:h-20 border-4 border-black bg-white flex items-center justify-center text-2xl md:text-3xl shadow-brutalist-sm;
+        }
+        .landmark-label {
+            @apply absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs font-bold bg-white border-2 border-black px-2 py-0.5;
+        }
+        .landmark-tooltip {
+            @apply absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-3 bg-white border-4 border-black text-sm opacity-0 invisible transition-all duration-200 z-50;
+        }
+
+        /* Path styling */
+        .map-path {
+            stroke: #8b7355;
+            stroke-width: 6;
+            stroke-linecap: round;
+            stroke-dasharray: 12 8;
+            fill: none;
+        }
+        .map-path-glow {
+            stroke: rgba(139, 115, 85, 0.3);
+            stroke-width: 16;
+            stroke-linecap: round;
+            fill: none;
+        }
+
+        /* Compass */
+        .compass {
+            @apply absolute top-4 right-4 w-16 h-16 md:w-20 md:h-20 border-4 border-black bg-white rounded-full flex items-center justify-center;
+        }
+
+        /* Decorative elements */
+        .map-decoration {
+            @apply absolute text-4xl opacity-40 select-none pointer-events-none;
+        }
+
+        /* Achievement flags */
+        .achievement-flag {
+            @apply absolute w-8 h-10 flex flex-col items-center;
+        }
+        .flag-pole {
+            @apply w-0.5 h-6 bg-black;
+        }
+        .flag-banner {
+            @apply absolute top-0 left-0.5 w-6 h-4 border-2 border-black text-[8px] font-bold flex items-center justify-center;
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        @keyframes walk {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(3px); }
+        }
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        .blink-cursor {
+            animation: blink 1s step-end infinite;
+        }
+        .walk-animation {
+            animation: walk 0.5s ease-in-out infinite;
+        }
+
+        /* Current position marker */
+        .current-marker {
+            @apply absolute;
+        }
+        .current-marker::after {
+            content: '';
+            @apply absolute w-24 h-24 rounded-full bg-green-400 opacity-20 -top-8 -left-8;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.2; }
+            50% { transform: scale(1.2); opacity: 0.1; }
+        }
+
+        /* Legend */
+        .legend-item {
+            @apply flex items-center gap-2 text-xs;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 max-w-6xl mx-auto">
+
+<nav class="flex justify-between items-center mb-6">
+    <a href="index.html" class="icon-link flex items-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        <span class="font-bold text-sm">BACK HOME</span>
+    </a>
+    <div class="flex gap-4">
+        <a href="https://www.linkedin.com/in/ekaterina-ryabukha/" class="icon-link" aria-label="LinkedIn">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.238 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+        </a>
+        <a href="https://x.com/ryababukha" class="icon-link" aria-label="X (Twitter)">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+        <a href="mailto:ryababukha@gmail.com" class="icon-link" aria-label="Email">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        </a>
+    </div>
+</nav>
+
+<header class="mb-6 text-center">
+    <div class="inline-block border-4 border-black bg-white p-4 shadow-brutalist">
+        <h1 class="text-3xl md:text-5xl font-extrabold uppercase mb-0 leading-none">
+            <span class="text-accent">📍</span> CAREER_MAP<span class="blink-cursor">|</span>
+        </h1>
+    </div>
+    <p class="mt-4 text-sm md:text-base">click landmarks to explore • check out the full version <a href="https://drive.google.com/file/d/1VgFiPZyTCkL2LAK3LYWnXR-nXJSIceg3/view?usp=sharing">here</a></p>
+</header>
+
+<!-- Mobile Timeline (visible only on small screens) -->
+<div class="block md:hidden mb-6">
+    <!-- Landmark 1 -->
+    <div class="brutalist-card bg-gray-100 mb-4">
+        <div class="flex items-center gap-3 mb-3">
+            <div class="text-3xl">🎧</div>
+            <div>
+                <div class="font-bold">TECH SUPPORT</div>
+                <div class="text-xs text-gray-600">2016-2018 • Intermedia</div>
+            </div>
+        </div>
+        <p class="text-sm mb-2">Journey in tech begins — helping users and writing docs</p>
+        <div class="text-xs bg-yellow-100 border border-black p-2 inline-block">🏆 +Tech Support and Tech Writing</div>
+    </div>
+
+    <!-- Landmark 2 -->
+    <div class="brutalist-card bg-blue-100 mb-4">
+        <div class="flex items-center gap-3 mb-3">
+            <div class="text-3xl">🔄</div>
+            <div>
+                <div class="font-bold">SECURITY FORTRESS</div>
+                <div class="text-xs text-gray-600">2018-2019 • Netwrix</div>
+            </div>
+        </div>
+        <p class="text-sm mb-2">From tech support to B2B product marketing in data security</p>
+        <div class="text-xs bg-yellow-100 border border-black p-2 inline-block">🏆 +First PMM skills unlocked</div>
+    </div>
+
+    <!-- Landmark 3 -->
+    <div class="brutalist-card bg-purple-200 mb-4">
+        <div class="flex items-center gap-3 mb-3">
+            <div class="text-3xl">🦄</div>
+            <div>
+                <div class="font-bold">WEBSTORM CASTLE</div>
+                <div class="text-xs text-gray-600">2019-2022 • JetBrains</div>
+            </div>
+        </div>
+        <p class="text-sm mb-2">Solo PMM adventure — built processes from scratch</p>
+        <div class="text-xs bg-yellow-100 border border-black p-2 inline-block">🏆 +GTM, releases, content writing, PLG</div>
+    </div>
+
+    <!-- Landmark 4 -->
+    <div class="brutalist-card bg-orange-200 mb-4">
+        <div class="flex items-center gap-3 mb-3">
+            <div class="text-3xl">🚀</div>
+            <div>
+                <div class="font-bold">FIRST LEADERSHIP ROLE, WEBSTORM</div>
+                <div class="text-xs text-gray-600">2022-2024 • JetBrains</div>
+            </div>
+        </div>
+        <p class="text-sm mb-2">Built & led a team of 4 • WebStorm non-comm launch</p>
+        <div class="text-xs bg-yellow-100 border border-black p-2 inline-block">🎉 50M reach campaign!</div>
+    </div>
+
+    <!-- Landmark 5 -->
+    <div class="brutalist-card bg-green-300 mb-4">
+        <div class="flex items-center gap-3 mb-3">
+            <div class="text-3xl">⭐</div>
+            <div>
+                <div class="font-bold">CURRENT QUEST: SCALE IMPACT</div>
+                <div class="text-xs text-gray-600">2025-Now • JetBrains</div>
+            </div>
+        </div>
+        <p class="text-sm mb-2">Leading marketing for 6 products</p>
+        <div class="text-xs bg-yellow-100 border border-black p-2 inline-block">🏆 12+ marketing campaigns, 2x faster team velocity</div>
+    </div>
+
+    <!-- Top Skills -->
+    <div class="brutalist-card bg-yellow-200 mb-4">
+        <div class="flex items-center gap-3 mb-3">
+            <div class="text-3xl">📜</div>
+            <div class="font-bold">TOP SKILLS</div>
+        </div>
+        <div class="flex flex-wrap gap-2">
+            <span class="text-xs bg-purple-100 border-2 border-black px-2 py-1">Team leadership</span>
+            <span class="text-xs bg-blue-100 border-2 border-black px-2 py-1">PLG</span>
+            <span class="text-xs bg-green-100 border-2 border-black px-2 py-1">PMM (B2C, B2B)</span>
+            <span class="text-xs bg-orange-100 border-2 border-black px-2 py-1">AI Tools</span>
+            <span class="text-xs bg-pink-100 border-2 border-black px-2 py-1">Campaigns</span>
+            <span class="text-xs bg-blue-100 border-2 border-black px-2 py-1">Copywriting</span>
+        </div>
+    </div>
+</div>
+
+<!-- THE MAP (visible only on medium+ screens) -->
+<main class="hidden md:block map-container shadow-brutalist min-h-[600px] md:min-h-[700px] relative">
+
+
+    <!-- Map Title Cartouche -->
+    <div class="absolute top-4 left-4 border-4 border-black bg-white p-2 md:p-3 max-w-[200px]">
+        <div class="text-xs font-bold uppercase border-b-2 border-black pb-1 mb-1">navigating</div>
+        <div class="text-sm md:text-base font-extrabold">TECH & MARKETING</div>
+        <div class="text-[10px] mt-1 text-gray-600">Since 2016</div>
+    </div>
+
+    <!-- SVG Paths connecting landmarks -->
+    <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 800 700" preserveAspectRatio="none">
+        <!-- Path glow -->
+        <path class="map-path-glow" d="M 100 600 Q 200 570 280 520 Q 350 480 400 450 Q 460 400 520 360 Q 610 300 700 240" />
+        <!-- Main path -->
+        <path class="map-path" d="M 100 600 Q 200 570 280 520 Q 350 480 400 450 Q 460 400 520 360 Q 610 300 700 240" />
+    </svg>
+
+    <!-- Decorative Map Elements -->
+    <div class="map-decoration" style="top: 70%; left: 5%;">🌲</div>
+    <div class="map-decoration" style="top: 75%; left: 12%;">🌲</div>
+    <div class="map-decoration" style="top: 60%; left: 8%;">🌲</div>
+    <div class="map-decoration" style="top: 5%; right: 25%;">☁️</div>
+    <div class="map-decoration" style="top: 15%; right: 45%;">☁️</div>
+    <div class="map-decoration float-animation" style="top: 50%; left: 80%;">🦋</div>
+    <div class="map-decoration" style="bottom: 15%; right: 10%;">🏔️</div>
+    <div class="map-decoration" style="bottom: 20%; right: 5%;">🏔️</div>
+
+    <!-- LANDMARK 1: The Beginning (Tech Support) -->
+    <div class="landmark" style="bottom: 12%; left: 8%;">
+        <div class="landmark-icon bg-gray-100">
+            🎧
+        </div>
+        <div class="landmark-label">START</div>
+        <div class="landmark-tooltip">
+            <div class="font-bold border-b-2 border-black pb-1 mb-2">📞 TECH SUPPORT</div>
+            <div class="text-xs text-gray-600 mb-1">2016-2018 • Intermedia</div>
+            <div>Journey in tech begins — helping users and writing docs</div>
+            <div class="mt-2 text-xs bg-yellow-100 border border-black p-1">🏆 +Tech Support and Tech Writing</div>
+        </div>
+    </div>
+
+    <!-- LANDMARK 2: The Pivot (First PMM) -->
+    <div class="landmark" style="bottom: 24%; left: 28%;">
+        <div class="landmark-icon bg-blue-100">
+            🔄
+        </div>
+        <div class="landmark-label">PIVOT POINT</div>
+        <div class="landmark-tooltip">
+            <div class="font-bold border-b-2 border-black pb-1 mb-2">🔐 SECURITY FORTRESS</div>
+            <div class="text-xs text-gray-600 mb-1">2018-2019 • Netwrix</div>
+            <div>From tech support to B2B product marketing in data security</div>
+            <div class="mt-2 text-xs bg-yellow-100 border border-black p-1">🏆 +First PMM skills unlocked</div>
+        </div>
+        <!-- Achievement flag -->
+        <div class="achievement-flag" style="top: -30px; right: -10px;">
+            <div class="flag-banner bg-green-300">PMM</div>
+            <div class="flag-pole"></div>
+        </div>
+    </div>
+
+    <!-- LANDMARK 3: JetBrains Solo PMM -->
+    <div class="landmark" style="bottom: 34%; left: 45%;">
+        <div class="landmark-icon bg-purple-200">
+            🦄
+        </div>
+        <div class="landmark-label">JETBRAINS, SOLO PMM</div>
+        <div class="landmark-tooltip">
+            <div class="font-bold border-b-2 border-black pb-1 mb-2">🏰 WEBSTORM CASTLE</div>
+            <div class="text-xs text-gray-600 mb-1">2019-2022 • JetBrains</div>
+            <div>Solo PMM adventure — built processes from scratch</div>
+            <div class="mt-2 text-xs bg-yellow-100 border border-black p-1">🏆 +GTM, releases, content writing, PLG</div>
+        </div>
+    </div>
+
+    <!-- LANDMARK 4: Team Lead -->
+    <div class="landmark" style="bottom: 46%; left: 62%;">
+        <div class="landmark-icon bg-orange-200">
+            🚀
+        </div>
+        <div class="landmark-label">JETBRAINS, TEAM LEAD</div>
+        <div class="landmark-tooltip">
+            <div class="font-bold border-b-2 border-black pb-1 mb-2">🌷 FIRST LEADERSHIP ROLE, WEBSTORM</div>
+            <div class="text-xs text-gray-600 mb-1">2022-2024 • JetBrains</div>
+            <div>Built & led a team of 4 • WebStorm non-comm launch</div>
+            <div class="mt-2 text-xs bg-yellow-100 border border-black p-1">🎉 50M reach campaign!</div>
+        </div>
+        <!-- Big achievement flag -->
+        <div class="achievement-flag" style="top: -35px; right: -15px;">
+            <div class="flag-banner bg-green-300">Team</div>
+            <div class="flag-pole"></div>
+        </div>
+    </div>
+
+    <!-- LANDMARK 5: Current - Division Lead -->
+    <div class="landmark current-marker" style="top: 36%; right: 10%;">
+        <div class="landmark-icon bg-green-300 walk-animation">
+            ⭐
+        </div>
+        <div class="landmark-label bg-green-300">YOU ARE HERE</div>
+        <div class="landmark-tooltip">
+            <div class="font-bold border-b-2 border-black pb-1 mb-2">🎮 CURRENT QUEST: SCALE IMPACT</div>
+            <div class="text-xs text-gray-600 mb-1">2025-Now • JetBrains</div>
+            <div>Leading marketing for 6 products</div>
+            <div class="mt-2 text-xs bg-yellow-100 border border-black p-1">🏆 12+ marketing campaigns, 2x faster team velocity</div>
+        </div>
+    </div>
+
+    <!-- Treasure chest (achievements) -->
+    <div class="landmark" style="bottom: 18%; right: 22%;">
+        <div class="landmark-icon bg-yellow-200 w-12 h-12 md:w-14 md:h-14 text-xl">
+            📜
+        </div>
+        <div class="landmark-label text-[10px]">TOP SKILLS</div>
+        <div class="landmark-tooltip w-56">
+            <div class="font-bold border-b-2 border-black pb-1 mb-2">📜 TOP SKILLS</div>
+            <div class="flex flex-wrap gap-1">
+                <span class="text-[10px] bg-purple-100 border border-black px-1">Team leadership</span>
+                <span class="text-[10px] bg-blue-100 border border-black px-1">PLG</span>
+                <span class="text-[10px] bg-green-100 border border-black px-1">PMM (B2C, B2B)</span>
+                <span class="text-[10px] bg-orange-100 border border-black px-1">AI Tools</span>
+                <span class="text-[10px] bg-pink-100 border border-black px-1">Campaigns</span>
+                <span class="text-[10px] bg-blue-100 border border-black px-1">Copywriting</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sea monster / fun element -->
+    <div class="absolute bottom-4 right-4 text-4xl opacity-60 float-animation" style="animation-delay: 0.5s;">
+        🐉
+    </div>
+    <div class="absolute bottom-2 right-16 text-[10px] font-bold opacity-60">
+        HERE BE<br>DRAGONS
+    </div>
+
+</main>
+
+<!-- Legend (hidden on mobile) -->
+<div class="hidden md:block mt-6 border-4 border-black bg-white p-4 shadow-brutalist">
+    <div class="flex flex-wrap justify-between items-center gap-4">
+        <div class="flex flex-wrap gap-4 md:gap-6">
+            <div class="legend-item">
+                <div class="w-4 h-1 bg-map-path"></div>
+                <span>Career Path</span>
+            </div>
+            <div class="legend-item">
+                <div class="w-4 h-4 border-2 border-black bg-green-300 text-[8px] flex items-center justify-center">★</div>
+                <span>Achievement</span>
+            </div>
+            <div class="legend-item">
+                <div class="w-4 h-4 border-2 border-black bg-white text-[10px] flex items-center justify-center">📍</div>
+                <span>Milestone</span>
+            </div>
+        </div>
+        <div class="text-xs font-bold">
+            8+ YEARS • 10+ PRODUCTS • ∞ COFFEE
+        </div>
+    </div>
+</div>
+
+<section class="mt-16">
+    <h2>Recent Projects (2024-2025)</h2>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Spotlight Project -->
+        <div class="brutalist-card lg:col-span-2 bg-accent hover:bg-accent-green transition-colors cursor-default">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b-2 border-black pb-2 mb-4">
+                <h3 class="mb-0">Non-commercial licensing for JetBrains IDEs</h3>
+                <span class="tag bg-black text-white">Spotlight</span>
+            </div>
+            <div class="w-full aspect-video border-2 border-black mb-4 overflow-hidden">
+                <iframe class="w-full h-full" src="https://www.youtube.com/embed/uvsWOi78FP8" title="Non-Commercial Licensing for JetBrains IDEs" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+            <p class="text-sm mb-3">One of JetBrains' key strategic initiatives in recent years.  The <a href="https://blog.jetbrains.com/blog/2024/10/24/webstorm-and-rider-are-now-free-for-non-commercial-use/">initial announcement</a> took place in late 2024. In 2025, we scaled the new licensing model to three more products. My team led marketing for three of the four campaigns, reaching millions of developers across JavaScript, .NET, C/C++, and Ruby communities through organic and paid promotion. </p>
+            <div class="flex flex-wrap gap-2 mb-0">
+                <div class="border-2 border-black bg-white px-3 py-2 flex-1 min-w-[150px]">
+                    <div class="text-xl font-bold">82M</div>
+                    <div class="text-xs">non-unique reach for WebStorm, CLion, and RubyMine campaigns</div>
+                </div>
+                <div class="border-2 border-black bg-white px-3 py-2 flex-1 min-w-[150px]">
+                    <div class="text-xl font-bold">2-3x</div>
+                    <div class="text-xs">product downloads growth</div>
+                </div>
+                <div class="border-2 border-black bg-white px-3 py-2 flex-1 min-w-[150px]">
+                    <div class="text-xl font-bold">100+ mentions</div>
+                    <div class="text-xs">by influencers in JS, C/C++, and Ruby, including Fireship, DHH, and Andreas Kling</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Merged PhpStorm Project -->
+        <div class="brutalist-card hover:bg-accent-green transition-colors cursor-default flex flex-col">
+            <h3 class="border-b-2 border-black pb-1 mb-3">Laravel and PhpStorm</h3>
+            <div class="w-full aspect-video border-2 border-black mb-3 overflow-hidden bg-white">
+                <img src="assets/php.png" alt="PhpStorm and Laravel" class="w-full h-full object-cover">
+            </div>
+            <p class="text-sm mb-3"><a href="https://www.jetbrains.com/phpstorm/" class="font-bold">PhpStorm</a> is JetBrains' third-biggest standalone product by revenue. In 2025, we secured two of the most impactful deals for it in years:</p>
+            <div class="space-y-3 text-sm mb-3">
+                <div>
+                    <span class="inline-block bg-black text-white px-2 py-0.5 text-xs font-bold mr-2">1</span>
+                    Partnered with Laravel, the largest PHP framework, making PhpStorm their <a href="https://laravel.com/blog/laravel-idea-plugin-is-free-for-phpstorm">officially recommended IDE</a>.
+                </div>
+                <div>
+                    <span class="inline-block bg-black text-white px-2 py-0.5 text-xs font-bold mr-2">2</span>
+                    Made the <a href="https://plugins.jetbrains.com/plugin/13441-laravel-idea">most popular PhpStorm plugin</a> free and later bundled it with the IDE. The announcement generated <b>500K+ organic impressions</b>, and plugin adoption grew from <b>8% to 25%</b> within the first few weeks.
+                </div>
+            </div>
+            <p class="text-xs mt-auto mb-0 pt-2 border-t border-black/10 italic">Both initiatives were crucial for retaining segments most prone to churn (SMBs and individuals).</p>
+        </div>
+
+        <!-- GoLand × AdrenalineOps -->
+        <div class="brutalist-card lg:col-span-2 bg-blue-50 hover:bg-accent-green transition-colors cursor-default">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b-2 border-black pb-2 mb-4">
+                <h3 class="mb-0">GoLand × AdrenalineOps</h3>
+                <span class="tag bg-green-300">Still Running</span>
+            </div>
+            <div class="w-full aspect-video border-2 border-black mb-4 overflow-hidden">
+                <iframe class="w-full h-full" src="https://www.youtube.com/embed/bUIk7_hoyPo" title="GoLand × AdrenalineOps" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+            <p class="text-sm mb-3">An awareness-focused campaign targeting DevOps engineers, inspired by Reddit discussions about the constant adrenaline of the job. We reframed GoLand as a tool that brings calm to high-pressure moments, with a hero video starring a JetBrains DevOps engineer skydiving.</p>
+            <div class="flex flex-wrap gap-2 mb-0">
+                <div class="border-2 border-black bg-white px-3 py-2 flex-1 min-w-[150px]">
+                    <div class="text-xl font-bold">👑</div>
+                    <div class="text-xs">one of our most liked and viewed Instagram videos</div>
+                </div>
+                <div class="border-2 border-black bg-white px-3 py-2 flex-1 min-w-[150px]">
+                    <div class="text-xl font-bold">💙</div>
+                    <div class="text-xs">1,469 likes</div>
+                </div>
+                <div class="border-2 border-black bg-white px-3 py-2 flex-1 min-w-[150px]">
+                    <div class="text-xl font-bold">👀</div>
+                    <div class="text-xs">50K views</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interviews with key opinion leaders -->
+        <div class="brutalist-card hover:bg-accent-green transition-colors cursor-default">
+            <h3 class="border-b-2 border-black pb-1 mb-3">Interviews with key opinion leaders</h3>
+            <p class="text-sm mb-3">Two interviews with influential figures in the developer community. One is now the most-watched JetBrains YouTube video in the past few years; the other is close behind. <b>180K+ views and counting</b>.</p>
+            <div class="w-full aspect-video border-2 border-black mb-2 overflow-hidden">
+                <iframe class="w-full h-full" src="https://www.youtube.com/embed/nOSxuaDgl3s" title="Interview with KOL 1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+            <p class="text-xs mb-8 text-gray-600">Jon Gjengset on Rust</p>
+            <div class="w-full aspect-video border-2 border-black mb-2 overflow-hidden">
+                <iframe class="w-full h-full" src="https://www.youtube.com/embed/HdUbTyvrfKo" title="Interview with KOL 2" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+            <p class="text-xs mb-0 text-gray-600">Kelsey Hightower on DevOps</p>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="mt-12 py-6 text-center bg-gray-300 border-t-4 border-black -mx-4 md:-mx-8 px-4">
+    <p class="text-sm text-gray-700 mb-0">Built with WebStorm, JetBrains Junie, and a pinch of millennial nostalgia ✨</p>
+</footer>
+
+</body>
+</html>

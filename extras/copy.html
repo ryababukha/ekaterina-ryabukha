@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Journey | Ekaterina Ryabukha</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'accent': '#d8b4fe',
+                        'accent-green': '#bbf7d0',
+                    },
+                    fontFamily: {
+                        'mono': ['JetBrains Mono', 'monospace'],
+                    },
+                    boxShadow: {
+                        'brutalist-sm': '4px 4px 0px 0px rgba(0,0,0,1)',
+                        'brutalist': '8px 8px 0px 0px rgba(0,0,0,1)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply bg-[#f0f0f0] text-black font-mono selection:bg-accent selection:text-black overflow-x-hidden;
+            }
+            h1 { @apply text-3xl md:text-5xl font-extrabold uppercase mb-6 leading-none; }
+            h2 { @apply text-2xl font-bold uppercase mb-4; }
+            h3 { @apply text-xl font-bold mb-2; }
+            p { @apply mb-4 text-base leading-relaxed; }
+            ul { @apply mb-4 list-none; }
+            li { @apply mb-2 flex items-start text-sm; }
+            li::before { content: '>'; @apply mr-2 font-bold text-accent bg-black px-1; }
+            a { @apply underline decoration-2 underline-offset-2 transition-all hover:bg-accent hover:text-black; }
+        }
+        .brutalist-card {
+            @apply border-4 border-black bg-white p-4 shadow-brutalist mb-8;
+        }
+        .icon-link {
+            @apply border-2 border-black p-2 bg-white shadow-brutalist-sm hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all no-underline;
+        }
+        .tag {
+            @apply inline-block border-2 border-black bg-accent px-2 py-0.5 text-xs font-bold mb-2 mr-2;
+        }
+
+        /* Map Styles */
+        .map-container {
+            @apply relative w-full min-h-[900px] py-12 bg-[#fbf3e4] border-8 border-black shadow-brutalist rounded-sm overflow-hidden;
+            background-image:
+                    linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+        .map-land {
+            @apply absolute border-4 border-black bg-white/40 shadow-brutalist rounded-[3rem] -z-10 transition-all duration-500;
+        }
+        .map-island {
+            @apply absolute border-4 border-black bg-white/60 shadow-brutalist-sm rounded-full -z-10 transition-all duration-500;
+        }
+        .map-node {
+            @apply absolute flex flex-col items-center transition-all duration-300 z-10;
+            transform: translate(-50%, -32px);
+        }
+        .node-content {
+            @apply brutalist-card absolute w-64 md:w-80 opacity-0 scale-90 pointer-events-none transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 group-hover:pointer-events-auto z-50;
+        }
+        .node-marker {
+            @apply w-16 h-16 rounded-full border-4 border-black bg-white shadow-brutalist-sm flex items-center justify-center text-3xl cursor-pointer hover:bg-accent transition-all z-10 hover:-translate-y-1;
+        }
+        .node-label {
+            @apply mt-2 bg-black text-white px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider shadow-brutalist-sm whitespace-nowrap;
+        }
+
+        /* Map Decorations */
+        .compass-rose {
+            @apply absolute top-8 right-8 w-24 h-24 md:w-32 md:h-32 opacity-80 select-none pointer-events-none;
+        }
+        .map-legend {
+            @apply absolute bottom-8 left-8 brutalist-card bg-white/90 p-3 text-[10px] leading-tight z-20 max-w-[150px];
+        }
+        .map-legend h4 { @apply font-bold uppercase border-b border-black mb-1; }
+
+        /* Easter Egg Styles */
+        .easter-egg {
+            @apply absolute cursor-help transition-all duration-300 hover:scale-110 grayscale hover:grayscale-0;
+        }
+        .easter-egg-reveal {
+            @apply absolute hidden group-hover:block brutalist-card bg-accent-green text-sm p-2 w-48 z-30 bottom-full left-1/2 -translate-x-1/2 mb-2;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 max-w-6xl mx-auto">
+
+<nav class="flex justify-between items-center mb-10">
+    <a href="../index.html" class="icon-link flex items-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        <span class="font-bold text-sm uppercase">Home</span>
+    </a>
+    <div class="flex gap-4">
+        <a href="https://www.linkedin.com/in/ekaterina-ryabukha/" class="icon-link" aria-label="LinkedIn">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.238 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+        </a>
+        <a href="mailto:ryababukha@gmail.com" class="icon-link" aria-label="Email">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        </a>
+    </div>
+</nav>
+
+<header class="mb-12 text-center">
+    <h1>&lt; Career Map<span class="animate-[blink_1s_infinite]">_</span></h1>
+    <p class="text-xl">A non-linear journey through the tech landscape.</p>
+    <p class="text-sm italic">Explore the landmarks to reveal the story.</p>
+</header>
+
+<style>
+    @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+    }
+</style>
+
+<main class="relative">
+    <!-- Resume Timeline -->
+    <div class="space-y-6">
+
+        <!-- Current Position - Highlighted -->
+        <div class="brutalist-card bg-green-500 text-black border-black border-4">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b-2 border-black pb-3 mb-4">
+                <div>
+                    <span class="tag bg-green-500 text-white border-green-500">2025 - Present</span>
+                    <h3 class="text-black mb-0 mt-2 font-extrabold">Product Marketing Lead, IDEs Division</h3>
+                </div>
+                <div class="text-4xl mt-2 md:mt-0">👑</div>
+            </div>
+            <p class="text-sm font-bold mb-2 text-black">JetBrains</p>
+            <p class="text-sm mb-4 text-black">Leading the product marketing team for six JetBrains IDEs (WebStorm, PhpStorm, RubyMine, Rider, CLion, RustRover), overseeing strategy and execution across the division.</p>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <p class="text-xs font-bold uppercase mb-2 text-black">Key Skills</p>
+                    <ul class="text-xs mb-0">
+                        <li class="before:bg-black before:text-white">Division strategy & cross-functional leadership</li>
+                        <li class="before:bg-black before:text-white">AI tools integration (ChatGPT, Cursor, Gemini)</li>
+                        <li class="before:bg-black before:text-white">Marketing strategy at department level</li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="text-xs font-bold uppercase mb-2 text-black">Key Achievements</p>
+                    <ul class="text-xs mb-0">
+                        <li class="before:bg-black before:text-white">Doubled team velocity with AI & consistent approaches</li>
+                        <li class="before:bg-black before:text-white">12+ marketing campaigns with new creative tactics</li>
+                        <li class="before:bg-black before:text-white">Strengthened product-marketing collaboration</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- JetBrains Phase 2 -->
+        <div class="brutalist-card hover:bg-accent/10 transition-colors">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b-2 border-black pb-3 mb-4">
+                <div>
+                    <span class="tag">2022 - 2025</span>
+                    <h3 class="mb-0 mt-2">Product Marketing Lead, WebStorm</h3>
+                </div>
+                <div class="text-4xl mt-2 md:mt-0">🚀</div>
+            </div>
+            <p class="text-sm font-bold mb-2">JetBrains</p>
+            <p class="text-sm mb-4">Built and led a four-person marketing team. Set direction and drove various initiatives for WebStorm, the JavaScript and TypeScript IDE.</p>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <p class="text-xs font-bold uppercase mb-2">Key Skills</p>
+                    <ul class="text-xs mb-0">
+                        <li>Team leadership & management</li>
+                        <li>Marketing strategy</li>
+                        <li>Campaign planning & execution</li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="text-xs font-bold uppercase mb-2">Key Achievements</p>
+                    <ul class="text-xs mb-0">
+                        <li>WebStorm Free for Non-Commercial Use: 50M reach, 219M impressions</li>
+                        <li>Streamlined release process adopted across JetBrains IDE teams</li>
+                        <li>2× increase in marketing productivity</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- JetBrains Phase 1 -->
+        <div class="brutalist-card hover:bg-accent/10 transition-colors">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b-2 border-black pb-3 mb-4">
+                <div>
+                    <span class="tag">2019 - 2022</span>
+                    <h3 class="mb-0 mt-2">Product Marketing Manager, WebStorm</h3>
+                </div>
+                <div class="text-4xl mt-2 md:mt-0">🦄</div>
+            </div>
+            <p class="text-sm font-bold mb-2">JetBrains</p>
+            <p class="text-sm mb-4">Built core marketing processes from the ground up for a product loved by millions of JavaScript developers worldwide.</p>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <p class="text-xs font-bold uppercase mb-2">Key Skills</p>
+                    <ul class="text-xs mb-0">
+                        <li>Positioning and messaging</li>
+                        <li>PLG-driven user onboarding</li>
+                        <li>Release process development</li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="text-xs font-bold uppercase mb-2">Key Achievements</p>
+                    <ul class="text-xs mb-0">
+                        <li>Developed positioning and messaging for WebStorm</li>
+                        <li>Established PLG-driven onboarding processes</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Netwrix -->
+        <div class="brutalist-card hover:bg-accent-green/10 transition-colors">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b-2 border-black pb-3 mb-4">
+                <div>
+                    <span class="tag">2018 - 2019</span>
+                    <h3 class="mb-0 mt-2">Product Marketing Manager</h3>
+                </div>
+                <div class="text-4xl mt-2 md:mt-0">🛡️</div>
+            </div>
+            <p class="text-sm font-bold mb-2">Netwrix</p>
+            <p class="text-sm mb-4">Transitioned from tech support to B2B product marketing in data security. Managed product launches and sales enablement materials.</p>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <p class="text-xs font-bold uppercase mb-2">Key Skills</p>
+                    <ul class="text-xs mb-0">
+                        <li>B2B Product Marketing</li>
+                        <li>Sales enablement</li>
+                        <li>Product releases</li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="text-xs font-bold uppercase mb-2">Key Achievements</p>
+                    <ul class="text-xs mb-0">
+                        <li>Designed and launched new on-site product demo flows</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Intermedia -->
+        <div class="brutalist-card hover:bg-accent-green/10 transition-colors">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b-2 border-black pb-3 mb-4">
+                <div>
+                    <span class="tag">2016 - 2018</span>
+                    <h3 class="mb-0 mt-2">Technical Support Specialist & Technical Writer</h3>
+                </div>
+                <div class="text-4xl mt-2 md:mt-0">🎧</div>
+            </div>
+            <p class="text-sm font-bold mb-2">Intermedia</p>
+            <p class="text-sm mb-4">Entered the tech world. Provided support via phone, email, and chat. Dedicated 30% of time to customer knowledge base content.</p>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <p class="text-xs font-bold uppercase mb-2">Key Skills</p>
+                    <ul class="text-xs mb-0">
+                        <li>Technical communication</li>
+                        <li>Customer support</li>
+                        <li>Technical writing & documentation</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Education -->
+        <div class="brutalist-card hover:bg-accent/10 transition-colors">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b-2 border-black pb-3 mb-4">
+                <div>
+                    <span class="tag">2011 - 2015</span>
+                    <h3 class="mb-0 mt-2">BA, International Relations</h3>
+                </div>
+                <div class="text-4xl mt-2 md:mt-0">🎓</div>
+            </div>
+            <p class="text-sm font-bold mb-2">Saint Petersburg State University</p>
+            <p class="text-sm mb-4">University of Warsaw Exchange Program. Built foundation in strategic thinking and cross-cultural communication.</p>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <p class="text-xs font-bold uppercase mb-2">Key Skills</p>
+                    <ul class="text-xs mb-0">
+                        <li>Strategic thinking</li>
+                        <li>Cross-cultural communication</li>
+                        <li>Languages (English, Russian)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Side Quests Section -->
+        <div class="mt-8">
+            <h2 class="text-lg mb-4">Side Quests</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="brutalist-card bg-accent-green/20 hover:bg-accent-green/30 transition-colors">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="tag bg-accent-green">2015 - 2016</span>
+                        <span class="text-2xl">🏷️</span>
+                    </div>
+                    <h3 class="text-sm mb-1">Sales Assistant</h3>
+                    <p class="text-xs mb-0">Another secret skill in the pocket. Customer-facing experience that shaped communication skills.</p>
+                </div>
+                <div class="brutalist-card bg-accent-green/20 hover:bg-accent-green/30 transition-colors">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="tag bg-accent-green">2013 - 2014</span>
+                        <span class="text-2xl">📸</span>
+                    </div>
+                    <h3 class="text-sm mb-1">Photography</h3>
+                    <p class="text-xs mb-0">Side quest: creativity and attention to detail. Skills that translate to visual marketing.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <section class="mt-16">
+        <h2>Recent Projects</h2>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Spotlight Project -->
+            <div class="brutalist-card md:col-span-2 lg:row-span-2 bg-accent hover:bg-white transition-colors cursor-default">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b-2 border-black pb-2 mb-4">
+                    <h3 class="mb-0">Non-Commercial Licensing for JetBrains IDEs</h3>
+                    <span class="tag bg-black text-white">Spotlight</span>
+                </div>
+                <div class="w-full aspect-video bg-white/50 border-2 border-black mb-4 flex items-center justify-center text-xs font-bold text-black/40 uppercase">
+                    Video/Image Placeholder
+                </div>
+                <p class="text-sm mb-3">One of JetBrains' most important strategic initiatives in recent years. Led marketing for campaigns reaching millions of developers across JavaScript, .NET, C/C++, and Ruby communities.</p>
+                <ul class="text-xs mb-0">
+                    <li>50M reach, 219M impressions for WebStorm campaign</li>
+                    <li>Downloads doubled or tripled for related IDEs</li>
+                    <li>Organically featured by major influencers including Fireship</li>
+                    <li>Scaled to four products across 2024-2025</li>
+                </ul>
+            </div>
+
+            <!-- Merged PhpStorm Project -->
+            <div class="brutalist-card hover:bg-accent-green transition-colors cursor-default flex flex-col">
+                <h3 class="border-b-2 border-black pb-1 mb-2">Laravel and PhpStorm</h3>
+                <div class="w-full aspect-video border-2 border-black mb-3 overflow-hidden bg-white">
+                    <img src="../assets/php.png" alt="PhpStorm and Laravel" class="w-full h-full object-cover">
+                </div>
+                <p class="text-xs mb-2 leading-relaxed"><a href="https://www.jetbrains.com/phpstorm/" class="font-bold">PhpStorm</a> is JetBrains’ third-biggest standalone product by revenue. In 2025, we secured two of the most impactful deals for it in years:</p>
+                <ul class="text-xs mb-3 space-y-2">
+                    <li>Partnered with Laravel, the largest PHP framework, making PhpStorm their <a href="https://laravel.com/blog/laravel-idea-plugin-is-free-for-phpstorm" class="font-bold">officially recommended IDE</a>. Implemented revenue-sharing referral links, a mechanism that didn’t previously exist at JetBrains.</li>
+                    <li>Made the most popular PhpStorm plugin free and later bundled it with the IDE. Previously, only a small fraction of users installed it due to its paid model. The announcement generated 500K+ organic impressions, and plugin adoption grew from 8% to 25% within the first few weeks.</li>
+                </ul>
+                <p class="text-xs mt-auto mb-0 pt-2 border-t border-black/10 italic">Both initiatives were crucial for retaining the segments most prone to churn due to the rise of AI editors (SMBs and individuals).</p>
+            </div>
+
+            <!-- Project 3 (Former 4) -->
+            <div class="brutalist-card hover:bg-accent-green transition-colors cursor-default">
+                <h3 class="border-b-2 border-black pb-1 mb-2">Project Placeholder</h3>
+                <div class="w-full aspect-video bg-gray-200 border-2 border-black mb-3 flex items-center justify-center text-[10px] font-bold text-gray-400 uppercase">
+                    Media Placeholder
+                </div>
+                <p class="text-xs">Details coming soon. This space is reserved for an upcoming project showcase.</p>
+            </div>
+
+            <!-- Project 4 (Former 5) -->
+            <div class="brutalist-card hover:bg-accent-green transition-colors cursor-default">
+                <h3 class="border-b-2 border-black pb-1 mb-2">Project Placeholder</h3>
+                <div class="w-full aspect-video bg-gray-200 border-2 border-black mb-3 flex items-center justify-center text-[10px] font-bold text-gray-400 uppercase">
+                    Media Placeholder
+                </div>
+                <p class="text-xs">Details coming soon. This space is reserved for an upcoming project showcase.</p>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="mt-12 py-8 border-t-4 border-black text-center relative z-10">
+    <p class="font-bold italic">The map is still being drawn...</p>
+</footer>
+
+</body>
+</html>
